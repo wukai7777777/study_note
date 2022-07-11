@@ -4,10 +4,10 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>Document</title>
 	<style>
-	#page{margin-top:30px; width:100%; text-align: center;}
+	#page{margin-top:30px; width:100%; text-align: center; position: relative; z-index: 100;}
 	#page em{display: inline-block; padding: 10px; color: #888;  border: 1px solid #ccc; font-size:18px; margin:0 5px;cursor: pointer; }
 	#page em.active{background: #f40; color: #fff;}
-	#ul{ margin:0 auto 150px;  padding:0; width:1100px; height:440px; overflow:hidden; }
+	#ul{ margin:0 auto 150px;  padding:0; width:1100px; height:440px;}
 	#ul li{width: 200px; height: 200px; background: red; margin:20px 0 0 20px; list-style: none; float: left; font-size:40px; color: #fff; text-align: center; line-height:200px;}
 	</style>
 	<script src="move.js"></script>
@@ -23,7 +23,7 @@
 		<em>4</em>
 	</div>
 	<script>
-	
+
 	var oPage = document.getElementById('page');
 	var aA = oPage.getElementsByTagName('em');
 	var arr = [];
@@ -66,27 +66,31 @@
 			'分页34'
 			]
 		};
-		
+		var timer = null;
+		var timer2 = null;
+
 		var oUl = document.getElementById('ul');
-	    var aLi = oUl.getElementsByTagName('li');
-	   
+	  var aLi = oUl.getElementsByTagName('li');
+		var pageSize = 10;
+
 
     function pageStyle(){
-    	var num = now*10<json.title.length? 10 : json.title.length-(now-1)*10;
-    	 var inow = num-1;
+    	var num = now*pageSize<json.title.length? pageSize : json.title.length-(now-1)*pageSize;
+    	 var inow = Math.max(9, num-1);
 	    if(oUl.innerHTML == ''){
-	    	if(now*10<json.title.length){
-	    		num=10;
+	    	if(now*pageSize<json.title.length){
+	    		num=pageSize;
 		    	for(var i=0;i<num;i++){
 		    		oLi = document.createElement('li');
-					oLi.innerHTML = json.title[(now-1)*10+i];
+					oLi.innerHTML = json.title[(now-1)*pageSize+i];
 					oUl.appendChild(oLi);
 				};
 			}else{
 				num=4;
 				for(var i=0;i<num;i++){
-		    		oLi = document.createElement('li');
-					oLi.innerHTML = json.title[(now-1)*10+i];
+					debugger;
+		    	oLi = document.createElement('li');
+					oLi.innerHTML = json.title[(now-1)*pageSize+i];
 					oUl.appendChild(oLi);
 				};
 			}
@@ -102,24 +106,30 @@
 				aLi[i].style.top = arr[i][1]+'px';
 				aLi[i].style.margin = '0';
 			};
-	    		
+
 	    }else{
+				if(timer) {
+					clearInterval(timer);
+				}
+				if(timer2) {
+					clearInterval(timer2);
+				}
 	    	timer = setInterval(function(){
-	    		//console.log(inow)
+					// inow = Math.max(inow, 9);
 	    		startMove(aLi[inow],{
 	    			left:870,
 	    			top:600,
 	    			opacity:0
 	    		})
-	    		
+
 	    		if(inow == 0){
 	    			clearInterval(timer);
 	    			inow = num-1;
 	    			for(var i=0;i<num;i++){
-	    				aLi[i].innerHTML = json.title[(now-1)*10+i];
+	    				aLi[i].innerHTML = json.title[(now-1)*pageSize+i];
 	    			}
 	    			timer2 = setInterval(function(){
-	    				
+
 	    				startMove(aLi[inow],{
 			    			left: arr[inow][0],
 			    			top: arr[inow][1],
@@ -139,7 +149,7 @@
 	    		}
 
 	    	}, 100);
-	    	
+
 	    };
 
     };
@@ -159,7 +169,7 @@
     		this.className = 'active';
 
     		now = this.index+1;
-    		
+
     		 pageStyle();
 
 
