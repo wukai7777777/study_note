@@ -53,7 +53,7 @@ window.onload = function() {
     if(currentStep > 5) {
       return;
     }
-    requestIdleCallback(renderTable);
+    Promise.resolve().then(renderTable);
   };
   renderTable();// 渲染dom
 };

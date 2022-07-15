@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>Document</title>
+	<style>
+	#page{margin-top:30px; width:100%; text-align: center; position: relative; z-index: 100;}
+	#page em{display: inline-block; padding: 10px; color: #888;  border: 1px solid #ccc; font-size:18px; margin:0 5px;cursor: pointer; }
+	#page em.active{background: #f40; color: #fff;}
+	#ul{ margin:0 auto 150px;  padding:0; width:1100px; height:440px;}
+	#ul li{width: 200px; height: 200px; background: red; margin:20px 0 0 20px; list-style: none; float: left; font-size:40px; color: #fff; text-align: center; line-height:200px;}
+	</style>
+	<script src="move.js"></script>
+</head>
+<body>
+
+
+	<ul id="ul"></ul>
+	<div id="page">
+		<!-- <em>1</em>
+		<em>2</em>
+		<em>3</em>
+		<em>4</em> -->
+	</div>
+	<script>
+
+	var oPage = document.getElementById('page');
+	var aA = oPage.getElementsByTagName('em');
+	var arr = [];
+	var now = 1;
+		var json = {
+			title:[
+			'分页1',
+			'分页2',
+			'分页3',
+			'分页4',
+			'分页5',
+			'分页6',
+			'分页7',
+			'分页8',
+			'分页9',
+			'分页10',
+			'分页11',
+			'分页12',
+			'分页13',
+			'分页14',
+			'分页15',
+			'分页16',
+			'分页17',
+			'分页18',
+			'分页19',
+			'分页20',
+			'分页21',
+			'分页22',
+			'分页23',
+			'分页24',
+			'分页25',
+			'分页26',
+			'分页27',
+			'分页28',
+			'分页29',
+			'分页30',
+			'分页31',
+			'分页32',
+			'分页33',
+			'分页34',
+			'分页35',
+			'分页36',
+			'分页37',
+			'分页38',
+			'分页39',
+			'分页40',
+			'分页41',
+			'分页42',
+			'分页43',
+			'分页44'
+			]
+		};
+		var timer = null;
+		var timer2 = null;
+
+		var oUl = document.getElementById('ul');
+	  var aLi = oUl.getElementsByTagName('li');
+		var pageSize = 10;
+
+
+    function pageStyle(){
+    	var num = now*pageSize<json.title.length? pageSize : json.title.length-(now-1)*pageSize;
+    	 var inow = Math.max(9, num-1);
+	    if(oUl.innerHTML == ''){
+	    	if(now*pageSize<json.title.length){
+	    		num=pageSize;
+		    	for(var i=0;i<num;i++){
+		    		oLi = document.createElement('li');
+					oLi.innerHTML = json.title[(now-1)*pageSize+i];
+					oUl.appendChild(oLi);
+				};
+			}else{
+				num=4;
+				for(var i=0;i<num;i++){
+					debugger;
+		    	oLi = document.createElement('li');
+					oLi.innerHTML = json.title[(now-1)*pageSize+i];
+					oUl.appendChild(oLi);
+				};
+			}
+
+			for(var i=0;i<aLi.length;i++){
+				arr.push([aLi[i].offsetLeft,aLi[i].offsetTop]);
+			};
+			for(var i=0;i <aLi.length;i++){
+				aLi[i].style.position = 'absolute';
+				aLi[i].style.left = arr[i][0]+'px';
+				aLi[i].style.top = arr[i][1]+'px';
+				aLi[i].style.margin = '0';
+			};
+
+	    }else{
+				if(timer) {
+					clearInterval(timer);
+				}
+				if(timer2) {
+					clearInterval(timer2);
+				}
+	    	timer = setInterval(function(){
+	    		startMove(aLi[inow],{
+	    			left:870,
+	    			top:600,
+	    			opacity:0
+	    		})
+
+	    		if(inow == 0){
+	    			clearInterval(timer);
+	    			inow = num-1;
+	    			for(var i=0;i<num;i++){
+	    				aLi[i].innerHTML = json.title[(now-1)*pageSize+i];
+	    			}
+	    			timer2 = setInterval(function(){
+
+	    				startMove(aLi[inow],{
+			    			left: arr[inow][0],
+			    			top: arr[inow][1],
+			    			opacity: 100
+			    		});
+			    		if(inow == 0){
+			    			clearInterval(timer2);
+			    			inow = num-1;
+			    		}else{
+			    			inow--;
+			    		}
+	    			}, 100)
+
+
+	    		}else{
+	    			inow--;
+	    		}
+
+	    	}, 100);
+
+	    };
+
+    };
+
+    pageStyle();
+
+
+    const btns = Math.ceil(json.title.length/pageSize);
+    for(var i=0;i<btns;i++){
+      const item = document.createElement('em');
+      item.innerHTML = i;
+    	item.index = i;
+
+      oPage.appendChild(item);
+
+    	item.onclick = function(){
+    		for(var i=0;i<btns;i++){
+    			item.className = '';
+    		};
+    		this.className = 'active';
+
+    		now = this.index+1;
+
+    		 pageStyle();
+
+
+
+    	};
+    };
+
+
+
+
+
+
+
+	</script>
+</body>
+</html>

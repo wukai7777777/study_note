@@ -25,9 +25,7 @@ line-height: 1.5em;
 <body>
 <div id="box" class="container"></div>
 <script type="text/javascript">
-
 var aa;
-
 window.onload = function() {
   const boxDom = document.getElementById('box');
   const cTable = document.createElement('table');
@@ -53,10 +51,10 @@ window.onload = function() {
     currentStep++;
     console.log(currentStep);
     if(currentStep > 5) {
-      clearTimeout(timer);
       return;
     }
-    var timer = queueMicrotask(renderTable);
+    debugger;
+    queueMicrotask(renderTable);
   };
   renderTable();// 渲染dom
 };
