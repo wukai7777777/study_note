@@ -94,14 +94,18 @@
 
     // 但是我最近发现MessageChannel的postMessage传递的数据也是深拷贝的，这和web worker的postMessage一样。而且还可以拷贝undefined和循环引用的对象。
     // 有undefined + 循环引用
-    // var obj = {
-    //   a: 1,
-    //   b: {
-    //     c: 2,
-    //     d: 3,
-    //   },
-    //   f: undefined
-    // }
+    var obj = {
+      a: 1,
+      b: {
+        c: 2,
+        d: 3,
+        n: [['wukai'], 12],
+        fn: function() {
+          console.log('wukai---');
+        }
+      },
+      f: undefined
+    }
     // obj.c = obj.b;
     // obj.e = obj.a
     // obj.b.c = obj.c
@@ -128,6 +132,43 @@
     // 方法三 lodash.cloneDeep() 方法实现
     // var _obj = lodash.cloneDeep(obj)
 
+    // js 深拷贝解决循环引用问题
+    function deepCopy(obj) {
+      const map = new WeakMap();
+      function dp(obj) {
+        let result = null;
+        let keys = Object.keys(obj);
+        let key = null,
+        temp = null;
+
+        const existence = map.get(obj);
+
+        if (existence) {
+          return existence;
+        }
+        result = obj instanceof Array ? [] : {};
+        map.set(obj, result);
+
+        for(let i=0; i < keys.length; i++) {
+          key = keys[i];
+          temp = obj[key];
+          if (temp && typeof temp === 'object') {
+            result[key] = dp(temp);
+          } else if (temp instanceof Array){
+            result[key] = dp(temp)
+          } else {
+            result[key] = temp;
+          }
+        }
+        return result;
+
+      }
+      return dp(obj);
+    }
+
+
+
+    console.log('deepCopy----', deepCopy(obj));
 
 
   </script>
