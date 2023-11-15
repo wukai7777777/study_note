@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  .box {
+    display: flex;
+  }
+  .box span {
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid red;
+  }
+  /* .box:nth-child() */
+</style>
+<body>
+  <div class="box">
+    <span>标题</span>
+    <span>参数名称</span>
+    <span>类型</span>
+    <span>允许值</span>
+    <span>默认值</span>
+    <span style="width: 15.4%">分组</span>
+    <span style="width: 80px">更多</span>
+  </div>
+</body>
+</html>
+
+<script>
+  var treeData = [
+    {
+        "pathType": "path",
+        "uid": "empty",
+        "name": "无",
+        "children": []
+    },
+    {
+        "pathType": "path",
+        "name": "test",
+        "children": [
+            {
+                "pathType": "path",
+                "name": "dbo",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_1_97ca8ef62aa1f5b0b358fe2e1e9d8471_0"
+            },
+            {
+                "pathType": "path",
+                "name": "cdc",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_1_b25854d4edef08a6bc2518ab4500448f_1"
+            },
+            {
+                "pathType": "path",
+                "name": "guest",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_1_315b699a1ec030597f6ec29a0de0a062_2"
+            }
+        ],
+        "inputStrategy": "ALL",
+        "uid": "_u_0_e95fa4eb642abb95bd94eac24dab271e_0"
+    },
+    {
+        "pathType": "path",
+        "name": "mytest",
+        "children": [
+            {
+                "pathType": "path",
+                "name": "dbo",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_2_3b06ae72ebaa207e8a8c25133040cac2_0"
+            },
+            {
+                "pathType": "path",
+                "name": "cdc",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_2_8e73f4dcb09ac3173bae7d668ca53a50_1"
+            }
+        ],
+        "inputStrategy": "ALL",
+        "uid": "_u_0_23b1a2b76726fde3db2f25e090a6ea74_1"
+    },
+    {
+        "pathType": "path",
+        "name": "qa",
+        "children": [
+            {
+                "pathType": "path",
+                "name": "cdc",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_3_a0d4064c147e02488508e9e2b3f7d54b_0"
+            },
+            {
+                "pathType": "path",
+                "name": "qa",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_3_6fbf2f61e806cfa34d298463bf4b35e7_1"
+            },
+            {
+                "pathType": "path",
+                "name": "dbo",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_3_83e93b238aa832dd02b632e6aab3dea7_2"
+            }
+        ],
+        "inputStrategy": "ALL",
+        "uid": "_u_0_0cc941cee641075fa00aab7f5d112df3_2"
+    },
+    {
+        "pathType": "path",
+        "name": "wss",
+        "children": [
+            {
+                "pathType": "path",
+                "name": "dbo",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_4_e53bc627578bf458ab1866cc7e3ca981_0"
+            },
+            {
+                "pathType": "path",
+                "name": "s1",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_4_255810d8d06d2cf42dcc0891cf1029a3_1"
+            },
+            {
+                "pathType": "path",
+                "name": "cdc",
+                "children": [],
+                "inputStrategy": "ALL",
+                "uid": "_u_4_76f0d684a643e1d3bf71e8161e88c7af_2"
+            }
+        ],
+        "inputStrategy": "ALL",
+        "uid": "_u_0_58981afe3eaa6d05b0c23842ecdf3e75_3"
+    }
+];
+var path = ['qa', 'qa'];
+function loop(path, data, key = 'name') {
+  const parents = []
+  const getTree = children => {
+    const pathName = path.shift();
+    children.forEach(ele => {
+      if(pathName === ele[key]) {
+        parents.push(ele);
+        if(Array.isArray(ele.children)) {
+          getTree(ele.children, parents);
+        }
+      }
+    });
+  }
+
+  // data.forEach(ele => {
+  //   const pathName = path.shift();
+  //   if(pathName === ele[key]) {
+  //     nodes.push(ele);
+  //     if(Array.isArray(ele.children)) {
+  //       getTree(ele.children, nodes);
+  //     }
+  //   }
+  // });
+
+  getTree(treeData);
+
+  return parents;
+}
+
+
+// const nodes = loop(['qa', 'qa'], treeData, 'name');
+
+// console.log('wukai----11111', nodes);
+var bucket = new Set();
+var data = {
+  text: 'hello world',
+  animal: { name: '人类' },
+};
+var effect = () => {
+  document.body.innerText = data.text;
+  console.log('执行了', data.text);
+}
+const obj = new Proxy(data, {
+    get(target, key) {
+        bucket.add(effect);
+        return target[key];
+    },
+    set(target, key, newVal) {
+        target[key] = newVal;
+        bucket.forEach(fn => fn());
+        return true;
+    }
+});
+</script>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+</body>
+</html>
+
+<script>
+  var node = {
+    "document": {
+        "nodes": [
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "children": [
+                    {
+                        "fontFamily": "Arial",
+                        "object": "text",
+                        "text": "你是字段"
+                    }
+                ]
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "children": [
+                    {
+                        "text": "{{{kjs-css原子化-分析应用}}}.{{订单表}}.{产品名称}",
+                        "code": true,
+                        "fontFamily": "Arial",
+                        "object": "text"
+                    },
+                    {
+                        "text": " ",
+                        "fontFamily": "Arial",
+                        "object": "text"
+                    }
+                ]
+            }
+        ]
+    },
+    "extra": [
+        {
+            "appId": "ownDashboard",
+            "appTitle": "kjs-css原子化-分析应用",
+            "datasetId": 1,
+            "datasetTitle": "订单表",
+            "fieldLabel": "产品名称",
+            "fieldName": "产品名称",
+            "isSystem": false
+        }
+    ]
+}
+
+function getFieldByMark(json, mark) {
+  const result = [];
+  function findField(nodes, path) {
+    if (Array.isArray(nodes)) {
+      const key = nodes[0]?.children ? 'children' : 'nodes';
+      nodes.forEach((n, i) => {
+        if (n[key]) {
+          findField(n[key], `${path}.${i}.${key}`);
+        }
+        if (n[mark]
+          || (Array.isArray(n.marks) && n.marks.find(m => m.type === mark))) {
+          result.push({
+            target: n.text,
+            origin: n.text,
+            path: `${path}.${i}`,
+          });
+        }
+      });
+    }
+  }
+  if (json?.document?.nodes) {
+    findField(json?.document?.nodes, 'document.nodes');
+  }
+  return result;
+}
+
+
+const aa = getFieldByMark(node, 'code');
+
+console.log('wwww', aa);
+
+
+</script>
